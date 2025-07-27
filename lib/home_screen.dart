@@ -45,7 +45,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _initializeApp() async {
-    // Solicitar permisos al inicio
     final granted = await requestPermissions();
     if (!granted) {
       setState(() {
@@ -53,7 +52,6 @@ class _MainScreenState extends State<MainScreen> {
       });
     }
 
-    // Iniciar monitoreo de servicios cada 2 segundos
     _statusCheckTimer = Timer.periodic(const Duration(seconds: 2), (_) {
       _checkServicesStatus();
     });
@@ -86,7 +84,6 @@ class _MainScreenState extends State<MainScreen> {
         }
       });
 
-      // Mostrar modal de servicios requeridos si es necesario
       if (!isBluetoothOn || !isGpsOn) {
         if (isAdvertising || isScanning || isServicesModalShowing) return;
 
@@ -203,7 +200,6 @@ class _MainScreenState extends State<MainScreen> {
     try {
       userId = int.parse(_userId.text);
 
-      // Mostrar modal de carga para advertising
       _showModal(
         "Exponiendo Datos BLE",
         "Presentando credencial...",
@@ -218,13 +214,12 @@ class _MainScreenState extends State<MainScreen> {
         statusMessage = "Exponiendo datos BLE... (5s)";
       });
 
-      // Después de 5 segundos, cambiar a modo escaneo
       Future.delayed(const Duration(seconds: 5), () async {
-        await stopProcess(); // Usar stopProcess para detener advertising
+        await stopProcess();
         _startScanningForResponse();
       });
     } catch (e) {
-      Navigator.of(context).pop(); // Cerrar modal de carga si hay error
+      Navigator.of(context).pop();
       setState(() {
         isAdvertising = false;
         statusMessage = "Error al activar Advertising: $e";
@@ -282,7 +277,6 @@ class _MainScreenState extends State<MainScreen> {
       statusMessage = "Escuchando respuesta del ESP32...";
     });
 
-    // Cerrar modal anterior y mostrar modal de escaneo
     Navigator.of(context).pop();
     _showModal(
       "Escaneando",
@@ -290,7 +284,6 @@ class _MainScreenState extends State<MainScreen> {
       isLoading: true,
     );
 
-    // Configurar timeout de 30 segundos
     _scanTimeoutTimer?.cancel();
     _scanTimeoutTimer = Timer(const Duration(seconds: 60), () {
       FlutterBluePlus.stopScan();
@@ -308,7 +301,6 @@ class _MainScreenState extends State<MainScreen> {
       );
     });
 
-    // Configurar listener para resultados del escaneo
     _scanSubscription = FlutterBluePlus.scanResults.listen((results) {
       for (ScanResult result in results) {
         final manufacturerData = result.advertisementData.manufacturerData;
@@ -318,14 +310,12 @@ class _MainScreenState extends State<MainScreen> {
           final espUserId = (payload[0] << 8) | payload[1];
 
           if (espUserId == userId) {
-            // Limpiar y detener escaneo
             _scanTimeoutTimer?.cancel();
             FlutterBluePlus.stopScan();
             _scanSubscription?.cancel();
             Navigator.of(context).pop();
             setState(() => isScanning = false);
 
-            // Procesar respuesta
             final status = payload[2];
             if (status == 1) {
               setState(
@@ -352,12 +342,10 @@ class _MainScreenState extends State<MainScreen> {
       }
     });
 
-    // Iniciar el escaneo BLE
     FlutterBluePlus.startScan();
   }
 
   Future<void> stopProcess() async {
-    // Detener advertising si está activo
     if (isAdvertising) {
       try {
         await nativeCodePlatform.invokeMethod('stopAdvertising');
@@ -370,7 +358,6 @@ class _MainScreenState extends State<MainScreen> {
       }
     }
 
-    // Detener escaneo si está activo
     if (isScanning) {
       FlutterBluePlus.stopScan();
       _scanSubscription?.cancel();
@@ -379,7 +366,7 @@ class _MainScreenState extends State<MainScreen> {
         isScanning = false;
         statusMessage = "Proceso detenido";
       });
-      Navigator.of(context).pop(); // Cerrar cualquier modal abierto
+      Navigator.of(context).pop();
     }
   }
 

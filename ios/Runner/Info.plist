@@ -45,5 +45,20 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Esta app usa Bluetooth para marcar asistencia mediante comunicación con dispositivos ESP32 en el aula.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Esta app usa Bluetooth para anunciarse como dispositivo BLE y comunicarse con lectores de asistencia.</string>
+	
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Esta app requiere acceso a ubicación para usar funciones de Bluetooth Low Energy requeridas para el sistema de asistencia.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Esta app requiere acceso a ubicación para usar funciones de Bluetooth Low Energy requeridas para el sistema de asistencia.</string>
+	
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>bluetooth-le</string>
+	</array>
 </dict>
 </plist>

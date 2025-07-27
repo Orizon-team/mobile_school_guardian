@@ -70,7 +70,6 @@ class MainActivity : FlutterActivity() {
                         android.Manifest.permission.ACCESS_FINE_LOCATION
                     )
                     
-                    // Verificar si algún permiso fue rechazado permanentemente
                     val shouldShowRationale = permissionsToRequest.any { permission ->
                         ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
                     }
@@ -114,7 +113,7 @@ class MainActivity : FlutterActivity() {
             .setConnectable(false)
             .build()
             
-        val manufacturerData = byteArrayOf( (userId shr 8).toByte(), (userId and 0xFF).toByte(),  year, month, day, hour, minute)
+        val manufacturerData = byteArrayOf(  0xAB.toByte(), 0xCD.toByte(),(userId shr 8).toByte(), (userId and 0xFF).toByte(),  year, month, day, hour, minute)
        
         val data = AdvertiseData.Builder()
             .addManufacturerData(0xFFFF, manufacturerData)
